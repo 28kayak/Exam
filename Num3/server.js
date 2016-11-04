@@ -74,8 +74,3 @@ app.listen(3000);
 console.log("node express app started at http://localhost:3000");
 
 
-//var port = 8080;
-//app.listen(port ,function () {
-  //  console.log("Serve is running @ http://127.0.0.1:"+port);
-//});
-//http://localhost:3000/endpoint?id=something
