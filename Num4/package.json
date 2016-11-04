@@ -1,0 +1,15 @@
+{
+  "name": "num4",
+  "version": "1.0.0",
+  "description": "簡単な商品在庫管理システムを考えます。以下のような在庫の追加、販売、チェックなどの機能を実装してください。 いずれの引数についても、予期しない値（例：整数のところに 1.1 の入力）が入力された場合はエラーとして扱い、\"ERROR\"と出力してください。 なお、テストでは必ず最初に全削除のリクエストを行いますので、在庫及び売り上げを全て削除するようにしてください。",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Kaya Ota",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
