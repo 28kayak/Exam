@@ -6,7 +6,7 @@ var express = require('express');
 
 var app = express();
 var port = 8080;
-var products = [{"name" : "ipad", "amount": 6}, {"name" : "xxx", "amount": 1}];
+var products = [{"name" : "ipad", "amount": 6}, {"name" : "xxx", "amount": 5}];
 var numOfAmount = 0;
 var sales = 0;
 
@@ -58,26 +58,26 @@ function showCurrentStocker() {
 
 
 function checkstock(req_query){
-    console.log("Check stock");
+    //console.log("Check stock");
 
     //console.log(req_query.hasOwnProperty("name"));
     var result = "";
     if(req_query.hasOwnProperty("name"))
     {
         //if user put specific product name in URL
-        console.log(req_query.name);
+        //console.log(req_query.name);
         var p_name = req_query.name;
 
         var treated = false;
         for(index in products)
         {
-            console.log("prodcut: " + products[index].name);
-            console.log("p_name" + p_name);
+            //console.log("prodcut: " + products[index].name);
+            //console.log("p_name" + p_name);
             if(JSON.stringify(products[index].name) === JSON.stringify(p_name))
             {
                 result = products[index].name + " : " + products[index].amount;
 
-                console.log(products[index].name + " : " + products[index].amount);
+                //console.log(products[index].name + " : " + products[index].amount);
                 treated = true;
             }
         }
@@ -88,9 +88,9 @@ function checkstock(req_query){
     }
     else
     {
-        console.log("In else");
+        //console.log("In else");
         //if user do not request specific product
-        
+
         for(index in products)
         {
 
@@ -103,19 +103,118 @@ function checkstock(req_query){
     //if()
 
 
-}
+}//checkstock
+function sell(req_query) {
+    console.log("in sell");
+    var index = 0;
+    var sale = 0;
+    var currentAmount = 0;
+    console.log()
+    //find index of products
+
+    for(;(index <= products.length) && !(JSON.stringify(products[index].name) === JSON.stringify(req_query.name)); index++);
+
+
+    console.log("products[index] =  "+products[index].name);
+    if(index == products.length)
+    {
+        console.log("Sold Out: no such product in stock");
+    }
+    else
+    {
+ 
+        if(req_query.hasOwnProperty("amount"))
+        {
+            console.log("amount is in input");
+            if(req_query.hasOwnProperty("price"))
+            {
+                sale = req_query.amount * req_query.price;
+                //console.log("sale: " + sale);
+                //add sale property
+                products[index].salse = sale;
+                console.log("sale: " + products[index].salse);
+                currentAmount = parseInt(products[index].amount);
+                console.log("Current Amount : " + currentAmount);
+                console.log("req_query.amout" + req_query.amount);
+                currentAmount = currentAmount - parseInt(req_query.amount);
+                //update  product amount
+                if(currentAmount < 0)
+                {
+                    console.log("Not enough stock!");
+                    products[index].amount = 0;
+
+                }
+                else
+                {
+                    
+                    products[index].amount = currentAmount;
+                }
+                console.log("Current Amount : " + currentAmount);
+                console.log("products[index].amount : " + products[index].amount );
+            }
+            else
+            {
+                //No price input in URL
+                currentAmount = parseInt(products[index].amount);
+                currentAmount = currentAmount - parseInt(req_query.amount);
+                //Update product amount
+                if(currentAmount < 0)
+                {
+                    console.log("Not enough stock!");
+                    products[index].amount = 0;
+
+                }
+                else
+                {
+                    products[index].amount = currentAmount;
+                }
+
+                console.log("Current Amount : " + currentAmount);
+                console.log("products[index].amount : " + products[index].amount );
+
+            }//price check
+        }
+        else
+        {
+            //No amount input in URL
+            //default value for amount is 1
+            //var soldAmount = 1;
+            if(req_query.hasOwnProperty(price))
+            {//amount is 1 and price is given price
+                sale = req_query.price * 1;
+                currentAmount = currentAmount -1;
+            }
+            else
+            {
+                currentAmount = currentAmount -1;
+            }
+
+
+        }//check amount property
+
+    }//index check
+
+    console.log("in sell aft for");
+
+
+};
+
+
 app.use('/stocker', function (req, res) {
     console.log('in add stock');
     //console.log('in endpoint');
     //var color = req.query.color;
     var f = req.query.function;
-    console.log(req.query);
+    console.log(req.query.function);
+
+    //if(f === )
 
     var productInfo = {"name": req.query.name, "amount": req.query.amount};
     //var p = {"name" : "ipad", "amount":8};
     //addstock(productInfo);
     //addstock(p);
-    checkstock(req.query);
+    //checkstock(req.query);
+    sell(req.query);
     res.end("Current Stock:" + JSON.stringify(products));
 });//use
 
