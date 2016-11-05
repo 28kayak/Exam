@@ -27,7 +27,7 @@ function calc(equation){
     try
     {
         result = eval(equation);//code to try
-        console.log("result = "+result);
+        //console.log("result = "+result);
       //given equation is not  result = "ERROR";
     }
     catch (err)
@@ -58,7 +58,7 @@ app.use('/calc', function (req,res) {
       //  console.log(splited[i]);
     //}
     
-    
+    console.log(ans);
 
     
     /*var input = req.query;
@@ -70,7 +70,7 @@ app.use('/calc', function (req,res) {
 
 
 })
-app.listen(3000);
-console.log("node express app started at http://localhost:3000");
+app.listen(8080);
+console.log("node express app started at http://localhost:8080");
 
 

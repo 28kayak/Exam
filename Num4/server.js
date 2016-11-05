@@ -179,42 +179,63 @@ function sell(req_query) {
             //No amount input in URL
             //default value for amount is 1
             //var soldAmount = 1;
-            if(req_query.hasOwnProperty(price))
+
+            currentAmount = parseInt(products[index].amount);
+            if(req_query.hasOwnProperty("price"))
             {//amount is 1 and price is given price
                 sale = req_query.price * 1;
                 currentAmount = currentAmount -1;
+                products[index].amount = currentAmount;
             }
             else
             {
                 currentAmount = currentAmount -1;
+                products[index].amount = currentAmount;
             }
 
 
         }//check amount property
 
     }//index check
-
-    console.log("in sell aft for");
-
-
+    //console.log("in sell aft for");
 };
 
+function checksales(req_query) {
+
+}
 
 app.use('/stocker', function (req, res) {
     console.log('in add stock');
     //console.log('in endpoint');
     //var color = req.query.color;
     var f = req.query.function;
-    console.log(req.query.function);
+    if(f === "addstock")
+    {
+        var productInfo = {"name": req.query.name, "amount": req.query.amount};
+        addstock(productInfo);
+    }
+    else if(f === "checkstock")
+    {
+        checkstock(req.query);
+    }
+    else if (f === "sell")
+    {
+        sell(req.query);
+    }
+    else
+    {
+        console.log("other function ??");
+    }
+    console.log("function : " + req.query.function);
 
     //if(f === )
 
-    var productInfo = {"name": req.query.name, "amount": req.query.amount};
+   
     //var p = {"name" : "ipad", "amount":8};
     //addstock(productInfo);
     //addstock(p);
     //checkstock(req.query);
-    sell(req.query);
+    //sell(req.query);
     res.end("Current Stock:" + JSON.stringify(products));
 });//use
 
