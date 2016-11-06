@@ -46,8 +46,8 @@
       <file leaf-file-name="issue.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Num4/issue.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="106" selection-start-line="2" selection-start-column="106" selection-end-line="2" selection-end-column="106" />
+            <state relative-caret-position="135">
+              <caret line="9" column="62" selection-start-line="9" selection-start-column="62" selection-end-line="9" selection-end-column="62" />
               <folding />
             </state>
           </provider>
@@ -374,12 +374,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1478217391937</updated>
-      <workItem from="1478221158072" duration="67459000" />
+      <workItem from="1478221158072" duration="67514000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67459000" />
+    <option name="totallyTimeSpent" value="67514000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -648,8 +648,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Num4/issue.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="106" selection-start-line="2" selection-start-column="106" selection-end-line="2" selection-end-column="106" />
+        <state relative-caret-position="135">
+          <caret line="9" column="62" selection-start-line="9" selection-start-column="62" selection-end-line="9" selection-end-column="62" />
           <folding />
         </state>
       </provider>
