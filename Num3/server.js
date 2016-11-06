@@ -58,7 +58,7 @@ app.use('/calc', function (req,res) {
       //  console.log(splited[i]);
     //}
     
-    console.log(ans);
+    //console.log(ans);
 
     
     /*var input = req.query;
