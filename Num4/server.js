@@ -6,9 +6,20 @@ var express = require('express');
 
 var app = express();
 var port = 8080;
-var products = [];
+var products = [];//store prodcuts
 var numOfAmount = 0;
 var sales = 0;
+
+function sortBy(propaty){
+    return function(a,b){
+        if( a[propaty] > b[propaty]){
+            return 1;
+        }else if( a[propaty] < b[propaty] ){
+            return -1;
+        }
+        return 0;
+    }
+}//sortBy
 
 
 function addstock(req_query){
@@ -137,7 +148,7 @@ function checkstock(req_query){
             //console.log("p_name" + p_name);
             if(JSON.stringify(products[index].name) === JSON.stringify(p_name))
             {
-                result = products[index].name + " : " + products[index].amount;
+                result = [index].name + " : " + products[index].amount;
 
                 //console.log(products[index].name + " : " + products[index].amount);
                 treated = true;
@@ -147,27 +158,31 @@ function checkstock(req_query){
         {
             console.log(p_name + " is not found!");
         }
-        else
+        /*else
         {
             console.log("show result");
             console.log(result);
-        }
+        }*/
     }
     else
     {
         //console.log("In else");
         //if user do not request specific product
-        console.log("show result");git
-        products.sortBy("name");
-        /*for(index in products)
+        //console.log("sorting");
+        products.sort( sortBy("name") );
+        //console.log("show result");
+        //console.log(products);
+        
+        for(index in products)
         {
-
             result += products[index].name +" : " + products[index].amount + "\n";
-        }*/
+        }
 
     }//else
    
-    //console.log(result);
+    
+    //console.log("show result of string");
+    console.log(result);
     //return result;
     //if()
 
@@ -313,16 +328,6 @@ function checksales(req_query){
     }
     
 }//checkSalse
-function sortBy(propaty){
-    return function(a,b){
-        if( a[propaty] > b[propaty]){
-            return 1;
-        }else if( a[propaty] < b[propaty] ){
-            return -1;
-        }
-        return 0;
-    }
-}//sortBy
 
 app.use('/stocker', function (req, res) {
     //console.log('in add stock');
