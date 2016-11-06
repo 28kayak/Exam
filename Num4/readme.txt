@@ -41,6 +41,7 @@ function（必須）：checksales
 
 引数：
 
+(5)
 function（必須）：deleteall
 出力：なし
 

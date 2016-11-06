@@ -246,6 +246,7 @@ function sell(req_query) {
                     //substract one from amount
                     currentAmount = currentAmount - 1;
                     products[index].amount = currentAmount;
+                    //
                 }
 
 
@@ -261,17 +262,54 @@ function sell(req_query) {
 };
 
 function checksales(req_query){
-    for(index in products)
+    var index = 0;
+    if(req_query.hasOwnProperty("name"))
     {
-        if(products[index].hasOwnProperty("salse"))
-        {
-            console.log( products[index].name + " : "+ products[index].salse);
+        for (; (index <= products.length) && !(JSON.stringify(products[index].name) === JSON.stringify(req_query.name)); index++);
+        if (index == products.length) {
+            console.log("Sold Out: no such product in stock");
         }
+        else
+        {
+            if(products[index].hasOwnProperty("salse"))
+            {
+                console.log( products[index].name + " : "+ products[index].salse);
+            }
+            else
+            {
+                console.log("Salse info is not available");
+            }
+            
+        }
+        /*for(index in products)
+        {
+            if(JSON.stringify(products[index].name) === JSON.stringify(req_query.name))
+            {
+                
+            }
+            if(products[index].hasOwnProperty("salse"))
+            {
+                console.log( products[index].name + " : "+ products[index].salse);
+            }
+        }*/
     }
+    else
+    {
+        //No specific name is given
+        for(index in products)
+        {
+            if(products[index].hasOwnProperty("salse"))
+            {
+                console.log( products[index].name + " : "+ products[index].salse);
+            }
+        }//for
+        
+    }
+    
 }
 
 app.use('/stocker', function (req, res) {
-    console.log('in add stock');
+    //console.log('in add stock');
     //console.log('in endpoint');
     //var color = req.query.color;
     var f = req.query.function;
@@ -287,6 +325,10 @@ app.use('/stocker', function (req, res) {
     else if (f === "sell")
     {
         sell(req.query);
+    }
+    else if (f=== 'checksales')  
+    {
+        checksales(req.query);
     }
     else if(f === 'deleteall')
     {
