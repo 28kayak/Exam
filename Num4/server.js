@@ -327,6 +327,8 @@ function sell(req_query) {
 function checksales(req_query){
     var index = 0;
     var result = "";
+    var temp_salse = 0.0;
+    var fixed_salse = 0.0;
     if(req_query.hasOwnProperty("name"))
     {
         for (; (index <= products.length) && !(JSON.stringify(products[index].name) === JSON.stringify(req_query.name)); index++);
@@ -337,7 +339,10 @@ function checksales(req_query){
         {
             if(products[index].hasOwnProperty("salse"))
             {
-                result = products[index].name + " : "+ products[index].salse ;
+                temp_salse = parseFloat(products[index].salse);
+                fixed_salse = temp_salse.toFixed(2);          
+        
+                result = products[index].name + " : "+ fixed_salse ;
             }
             else
             {
@@ -364,7 +369,9 @@ function checksales(req_query){
         {
             if(products[index].hasOwnProperty("salse"))
             {
-                result = products[index].name + " : "+ products[index].salse;
+                temp_salse = parseFloat(products[index].salse);
+                fixed_salse = temp_salse.toFixed(2);
+                result = products[index].name + " : "+ fixed_salse;
             }
         }//for
         
