@@ -30,10 +30,10 @@ function addstock(req_query){
     if(req_query.hasOwnProperty("amount"))
     {
         var additional = parseInt(req_query.amount);//treat double as int
-        console.log(req_query.amount);
+        //console.log(req_query.amount);
         //var givenAmount = parseInt(JSON.stringify(req_query.amount));
-        console.log(Number.isInteger(additional));
-        if(! Number.isInteger(additional) )
+        //console.log(Number.isInteger(additional));
+        if(! Number.isInteger(additional))
         {
 
             console.log("ERROR @ isInt");
@@ -120,7 +120,7 @@ function addstock(req_query){
         }
 
     }
-    showCurrentStocker();
+    //showCurrentStocker();
 
 }//addstock()
 function showCurrentStocker() {
@@ -148,7 +148,7 @@ function checkstock(req_query){
             //console.log("p_name" + p_name);
             if(JSON.stringify(products[index].name) === JSON.stringify(p_name))
             {
-                result = [index].name + " : " + products[index].amount;
+                result = products[index].name + " : " + products[index].amount;
 
                 //console.log(products[index].name + " : " + products[index].amount);
                 treated = true;
@@ -190,17 +190,18 @@ function checkstock(req_query){
 
 }//checkstock
 function sell(req_query) {
-    console.log("in sell");
+    //console.log("in sell");
     var index = 0;
     var newSalse = 0;
     var currentAmount = 0;
+    var currentSalse = 0;
     console.log();
     //find index of products
     if(req_query.hasOwnProperty("name")) {
         for (; (index <= products.length) && !(JSON.stringify(products[index].name) === JSON.stringify(req_query.name)); index++);
 
 
-        console.log("products[index] =  " + products[index].name);
+        //console.log("products[index] =  " + products[index].name);
         if (index == products.length) {
             console.log("Sold Out: no such product in stock");
         }
@@ -213,15 +214,29 @@ function sell(req_query) {
                     newSalse = req_query.amount * req_query.price;
                     //console.log("newSalse: " + newSalse);
                     //add newSalse property
-                    products[index].salse = newSalse;
-                    console.log("newSalse: " + products[index].salse);
+                    if(!products[index].hasOwnProperty("salse"))
+                    {
+                        products[index].salse = newSalse;
+                    }
+                    else
+                    {
+                        currentSalse = parseFloat(products[index].salse);
+                        currentSalse = currentSalse + newSalse;
+                        products[index].salse = currentSalse;
+
+                    }
+                    //currentSalse = parseInt(products[index].salse);
+                    //products[index].salse = currentSalse + newSalse;
+                    //console.log("newSalse: " + products[index].salse);
+                    
+                    //parse current amount
                     currentAmount = parseInt(products[index].amount);
-                    console.log("Current Amount : " + currentAmount);
-                    console.log("req_query.amout" + req_query.amount);
+                    //console.log("Current Amount : " + currentAmount);
+                    //console.log("req_query.amout" + req_query.amount);
                     currentAmount = currentAmount - parseInt(req_query.amount);
                     //update  product amount
                     if (currentAmount < 0) {
-                        console.log("Not enough stock!");
+                        console.log("Error: Not enough stock!");
                         products[index].amount = 0;
 
                     }
@@ -229,8 +244,8 @@ function sell(req_query) {
 
                         products[index].amount = currentAmount;
                     }
-                    console.log("Current Amount : " + currentAmount);
-                    console.log("products[index].amount : " + products[index].amount);
+                    //console.log("Current Amount : " + currentAmount);
+                    //console.log("products[index].amount : " + products[index].amount);
                 }
                 else {
                     //No price input in URL
@@ -238,15 +253,15 @@ function sell(req_query) {
                     currentAmount = currentAmount - parseInt(req_query.amount);
                     //Update product amount
                     if (currentAmount < 0) {
-                        console.log("ERROR");
+                        console.log("ERROR: Not enough stock!");
                         products[index].amount = 0;
                     }
                     else {
                         products[index].amount = currentAmount;
                     }
 
-                    console.log("Current Amount : " + currentAmount);
-                    console.log("products[index].amount : " + products[index].amount);
+                    //console.log("Current Amount : " + currentAmount);
+                    //console.log("products[index].amount : " + products[index].amount);
 
                 }//price check
             }
@@ -261,10 +276,11 @@ function sell(req_query) {
                     newSalse = req_query.price * 1;
                     currentAmount = currentAmount - 1;
                     products[index].amount = currentAmount;
-                    products[index].salse = newSalse;
+                    currentSalse = parseFloat(products[index].salse);
+                    products[index].salse = currentSalse + newSalse;
                 }
                 else {
-                    //substract one from amount
+                    //substract one from amount and no prive in URL
                     currentAmount = currentAmount - 1;
                     products[index].amount = currentAmount;
                     //
@@ -277,7 +293,7 @@ function sell(req_query) {
     }//name requirement check
     else
     {
-        console.log("ERROR missing requirement");
+        console.log("ERROR: missing requirement");
     }
     //console.log("in sell aft for");
 };
@@ -288,7 +304,7 @@ function checksales(req_query){
     {
         for (; (index <= products.length) && !(JSON.stringify(products[index].name) === JSON.stringify(req_query.name)); index++);
         if (index == products.length) {
-            console.log("Sold Out: no such product in stock");
+            console.log("Error: no such product in stock");
         }
         else
         {
@@ -298,7 +314,7 @@ function checksales(req_query){
             }
             else
             {
-                console.log("Salse info is not available");
+                console.log("Error: Salse info is not available");
             }
             
         }
@@ -357,7 +373,7 @@ app.use('/stocker', function (req, res) {
     }
     else
     {
-        console.log("No such function");
+        console.log("Error: No such function");
     }
     //console.log("function : " + req.query.function);
 
@@ -369,7 +385,7 @@ app.use('/stocker', function (req, res) {
     //addstock(p);
     //checkstock(req.query);
     //sell(req.query);
-    res.end("Current Stock:" + JSON.stringify(products));
+    res.end("Current Stock:" + JSON.stringify(products) +"\n");
 });//use
 
 
