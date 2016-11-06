@@ -273,11 +273,25 @@ function sell(req_query) {
                 currentAmount = parseInt(products[index].amount);
                 if (req_query.hasOwnProperty("price")) {
                     //amount is 1 and price is given price
-                    newSalse = req_query.price * 1;
+                    newSalse = parseFloat(req_query.price) * 1.0;
+                    //calc amount
                     currentAmount = currentAmount - 1;
                     products[index].amount = currentAmount;
-                    currentSalse = parseFloat(products[index].salse);
-                    products[index].salse = currentSalse + newSalse;
+                    //currentSalse = parseFloat(products[index].salse);
+                    //products[index].salse = currentSalse + newSalse;
+
+                    if(!products[index].hasOwnProperty("salse"))
+                    {
+                        //first time to store salse attibute
+                        products[index].salse = newSalse;
+                    }
+                    else
+                    {
+                        currentSalse = parseFloat(products[index].salse);
+                        currentSalse = currentSalse + newSalse;
+                        products[index].salse = currentSalse;
+
+                    }
                 }
                 else {
                     //substract one from amount and no prive in URL
