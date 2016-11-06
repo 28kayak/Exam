@@ -6,7 +6,7 @@ var express = require('express');
 
 var app = express();
 var port = 8080;
-var products = [];//store prodcuts
+var products = [];//store products
 var numOfAmount = 0;
 var sales = 0;
 
@@ -27,16 +27,20 @@ function addstock(req_query){
     var newAmount = 0;//init newAmount
     var treated = false;//check if given product is treated
     var newProduct = {};
+    var error = "";
     if(req_query.hasOwnProperty("amount"))
     {
+        
+        
         var additional = parseInt(req_query.amount);//treat double as int
         //console.log(req_query.amount);
         //var givenAmount = parseInt(JSON.stringify(req_query.amount));
         //console.log(Number.isInteger(additional));
         if(! Number.isInteger(additional))
         {
-
-            console.log("ERROR @ isInt");
+            
+            error = "ERROR @ isInt";
+            
         }
         else
         {
@@ -156,7 +160,7 @@ function checkstock(req_query){
         }
         if(!treated)
         {
-            console.log(p_name + " is not found!");
+            result = p_name + " is not found in stock!";
         }
         /*else
         {
@@ -182,8 +186,8 @@ function checkstock(req_query){
    
     
     //console.log("show result of string");
-    console.log(result);
-    //return result;
+    //console.log(result);
+    return result;
     //if()
 
 
@@ -195,15 +199,22 @@ function sell(req_query) {
     var newSalse = 0;
     var currentAmount = 0;
     var currentSalse = 0;
+    var error = "";
     console.log();
     //find index of products
     if(req_query.hasOwnProperty("name")) {
+        if(products.length == 0)
+        {
+            //products is now empty
+            return error = "Error: empty stock";
+            
+        }
         for (; (index <= products.length) && !(JSON.stringify(products[index].name) === JSON.stringify(req_query.name)); index++);
 
 
         //console.log("products[index] =  " + products[index].name);
         if (index == products.length) {
-            console.log("Sold Out: no such product in stock");
+             return error = "ERROR: no such product in stock";
         }
         else {
 
@@ -236,7 +247,7 @@ function sell(req_query) {
                     currentAmount = currentAmount - parseInt(req_query.amount);
                     //update  product amount
                     if (currentAmount < 0) {
-                        console.log("Error: Not enough stock!");
+                        error = "Error: Not enough stock!";
                         products[index].amount = 0;
 
                     }
@@ -253,7 +264,7 @@ function sell(req_query) {
                     currentAmount = currentAmount - parseInt(req_query.amount);
                     //Update product amount
                     if (currentAmount < 0) {
-                        console.log("ERROR: Not enough stock!");
+                        error = "ERROR: Not enough stock!";
                         products[index].amount = 0;
                     }
                     else {
@@ -307,28 +318,30 @@ function sell(req_query) {
     }//name requirement check
     else
     {
-        console.log("ERROR: missing requirement");
+        error = "ERROR: missing requirement";
     }
+    return error;
     //console.log("in sell aft for");
-};
+};//sell
 
 function checksales(req_query){
     var index = 0;
+    var result = "";
     if(req_query.hasOwnProperty("name"))
     {
         for (; (index <= products.length) && !(JSON.stringify(products[index].name) === JSON.stringify(req_query.name)); index++);
         if (index == products.length) {
-            console.log("Error: no such product in stock");
+            result = "Error: no such product in stock";
         }
         else
         {
             if(products[index].hasOwnProperty("salse"))
             {
-                console.log( products[index].name + " : "+ products[index].salse);
+                result = products[index].name + " : "+ products[index].salse ;
             }
             else
             {
-                console.log("Error: Salse info is not available");
+                result = "Error: Salse info is not available";
             }
             
         }
@@ -351,11 +364,12 @@ function checksales(req_query){
         {
             if(products[index].hasOwnProperty("salse"))
             {
-                console.log( products[index].name + " : "+ products[index].salse);
+                result = products[index].name + " : "+ products[index].salse;
             }
         }//for
         
     }
+    return result;
     
 }//checkSalse
 
@@ -363,32 +377,45 @@ app.use('/stocker', function (req, res) {
     //console.log('in add stock');
     //console.log('in endpoint');
     //var color = req.query.color;
-    var f = req.query.function;
-    if(f === "addstock")
+    console.log("type of");
+    console.log(typeof req.query.amount);
+    var result = "";
+    if(req.query.hasOwnProperty("amount")&& req.query.amount.includes("."))
     {
-        //var productInfo = {"name": req.query.name, "amount": req.query.amount};
-        addstock(req.query);
-    }
-    else if(f === "checkstock")
-    {
-        checkstock(req.query);
-    }
-    else if (f === "sell")
-    {
-        sell(req.query);
-    }
-    else if (f=== 'checksales')  
-    {
-        checksales(req.query);
-    }
-    else if(f === 'deleteall')
-    {
-        products = [];
+      result = "ERROR: amount is decimal";
     }
     else
     {
-        console.log("Error: No such function");
+        var f = req.query.function;
+        if(f === "addstock")
+        {
+            //var productInfo = {"name": req.query.name, "amount": req.query.amount};
+            result = addstock(req.query);
+        }
+        else if(f === "checkstock")
+        {
+            result = checkstock(req.query);
+        }
+        else if (f === "sell")
+        {
+            result = sell(req.query);
+        }
+        else if (f=== 'checksales')
+        {
+            result = checksales(req.query);
+        }
+        else if(f === 'deleteall')
+        {
+            products = [];
+        }
+        else
+        {
+            reuslt = "Error: No such function";
+        }
+
     }
+
+
     //console.log("function : " + req.query.function);
 
     //if(f === )
@@ -399,7 +426,17 @@ app.use('/stocker', function (req, res) {
     //addstock(p);
     //checkstock(req.query);
     //sell(req.query);
-    res.end("Current Stock:" + JSON.stringify(products) +"\n");
+    if(result === undefined)
+    {
+        //request was no error and the function has  no output msg
+        res.end();
+    }
+    else
+    {
+        //there is output msg xor error msg
+        res.end(result + "\n");
+    }
+    //res.end("Current Stock:" + JSON.stringify(products) +"\n" + result +"\n");
 });//use
 
 
