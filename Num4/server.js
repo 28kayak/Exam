@@ -147,22 +147,28 @@ function checkstock(req_query){
         {
             console.log(p_name + " is not found!");
         }
+        else
+        {
+            console.log("show result");
+            console.log(result);
+        }
     }
     else
     {
         //console.log("In else");
         //if user do not request specific product
-
-        for(index in products)
+        console.log("show result");git
+        products.sortBy("name");
+        /*for(index in products)
         {
 
             result += products[index].name +" : " + products[index].amount + "\n";
-        }
+        }*/
 
     }//else
-    console.log("show result");
-    console.log(result);
-    return result;
+   
+    //console.log(result);
+    //return result;
     //if()
 
 
@@ -306,7 +312,17 @@ function checksales(req_query){
         
     }
     
-}
+}//checkSalse
+function sortBy(propaty){
+    return function(a,b){
+        if( a[propaty] > b[propaty]){
+            return 1;
+        }else if( a[propaty] < b[propaty] ){
+            return -1;
+        }
+        return 0;
+    }
+}//sortBy
 
 app.use('/stocker', function (req, res) {
     //console.log('in add stock');
