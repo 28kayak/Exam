@@ -1,0 +1,10 @@
+1:need to refactor(too many lines in one file)
+2:can not handle with decimal amount(fixed)
+3:if requested amount is more than current, then set amount to be zero(fixed by give error before treating )
+4:has not treated rounding 10^(-2)(fixed)
+5:calling sells function with empty product gives error(fixed)
+
+
+
+6:will use Mongo db
+7:need to treat nicer when determining amount is decimal or int because now check "amount" existence twice
