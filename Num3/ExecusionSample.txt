@@ -1,18 +1,18 @@
-$ curl 'http://172.31.14.74:8080/calc?abc'
-ERROR
-$ curl 'http://172.31.14.74:8080/calc?1+1'
+curl 'http://172.31.14.74:8080/calc?abc'
+
+curl 'http://172.31.14.74:8080/calc?1+1'
 2
-$ curl 'http://192.168.1.241:8080/calc?2-1'
+curl 'http://172.31.14.74:8080/calc?2-1'
 1
-$ curl 'http://192.168.1.241:8080/calc?3*2'
+curl 'http://172.31.14.74:8080/calc?3*2'
 6
-$ curl 'http://192.168.1.241:8080/calc?4/2'
+curl 'http://172.31.14.74:8080/calc?4/2'
 2
-$ curl 'http://192.168.1.241:8080/calc?1+2*3'
+curl 'http://172.31.14.74:8080/calc?1+2*3'
 7
-$ curl 'http://192.168.1.241:8080/calc?(1+2)*3'
+curl 'http://172.31.14.74:8080/calc?(1+2)*3'
 9
-$ curl 'http://127.0.0.1:8080/calc?abc'
+curl 'http://127.0.0.1:8080/calc?abc'
 
 $ curl 'http://127.0.0.1:8080/calc?1+1'
 

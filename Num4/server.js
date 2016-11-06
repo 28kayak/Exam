@@ -5,7 +5,7 @@ var express = require('express');
 
 
 var app = express();
-var port = 8080;
+var port = 8088;
 var products = [];//store products
 var numOfAmount = 0;
 var sales = 0;
