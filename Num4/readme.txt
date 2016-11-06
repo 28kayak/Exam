@@ -39,3 +39,10 @@ price（任意）：対象の商品の価格（0より大きい数値）を指�
 function（必須）：checksales
 出力： その時点の売り上げを "sales: [sales]" の形式で表示する。小数の場合は小数点第二位まで表示されるよう切り上げてください。
 
+引数：
+
+function（必須）：deleteall
+出力：なし
+
+/Users/kaya/WebstormProjects/Amazon
+
