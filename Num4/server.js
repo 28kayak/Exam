@@ -6,7 +6,7 @@ var express = require('express');
 
 var app = express();
 var port = 8080;
-var products = [{"name" : "ipad", "amount": 6}, {"name" : "xxx"}];
+var products = [];
 var numOfAmount = 0;
 var sales = 0;
 
@@ -110,44 +110,7 @@ function addstock(req_query){
 
     }
     showCurrentStocker();
- /*
-    console.log("added: " + JSON.stringify(req_query));
-    console.log("Length = " + products.length);
 
-    for(index in products )
-    {
-        console.log("product name  =" + products[index].name);
-        console.log("added product = " + req_query.name);
-        console.log("check index   = " +index);
-        if (JSON.stringify(products[index].name) === JSON.stringify(req_query.name)) {
-            //console.log("additional amount: " + parseInt( req_query.amount));
-            //console.log("current amount : " + parseInt(prodcuts[0].amount) );
-            console.log("==================there is an identical product==================");
-            var additional = parseInt(req_query.amount);
-            var current = parseInt(products[index].amount);
-
-            newAmount = current + additional;
-            products[index].amount = newAmount;
-            //console.log("total: product = " + products[index].amount);
-            showCurrentStocker();
-            treated = true;
-            //console.log("===========================================================");
-
-        }
-        else {
-            //console.log("Some thing wrong");
-            //can be new product
-        }
-    }//for
-    if(!treated)
-    {
-        //if addition is already treated
-        console.log("==================New product is inserted==================");
-        products.push(req_query);
-        showCurrentStocker();
-        //console.log("===========================================================");
-    }
-*/
 }//addstock()
 function showCurrentStocker() {
     console.log("============SHOW Current products========");
@@ -195,18 +158,20 @@ function checkstock(req_query){
 
             result += products[index].name +" : " + products[index].amount + "\n";
         }
-        console.log("show result");
-        console.log(result);
-        return result;
-    }
+
+    }//else
+    console.log("show result");
+    console.log(result);
+    return result;
     //if()
+
 
 
 }//checkstock
 function sell(req_query) {
     console.log("in sell");
     var index = 0;
-    var sale = 0;
+    var newSalse = 0;
     var currentAmount = 0;
     console.log();
     //find index of products
@@ -220,14 +185,15 @@ function sell(req_query) {
         }
         else {
 
-            if (req_query.hasOwnProperty("amount")) {
-                console.log("amount is in input");
+            if (req_query.hasOwnProperty("amount")) 
+            {
+                //console.log("amount is in input");
                 if (req_query.hasOwnProperty("price")) {
-                    sale = req_query.amount * req_query.price;
-                    //console.log("sale: " + sale);
-                    //add sale property
-                    products[index].salse = sale;
-                    console.log("sale: " + products[index].salse);
+                    newSalse = req_query.amount * req_query.price;
+                    //console.log("newSalse: " + newSalse);
+                    //add newSalse property
+                    products[index].salse = newSalse;
+                    console.log("newSalse: " + products[index].salse);
                     currentAmount = parseInt(products[index].amount);
                     console.log("Current Amount : " + currentAmount);
                     console.log("req_query.amout" + req_query.amount);
@@ -269,12 +235,15 @@ function sell(req_query) {
                 //var soldAmount = 1;
 
                 currentAmount = parseInt(products[index].amount);
-                if (req_query.hasOwnProperty("price")) {//amount is 1 and price is given price
-                    sale = req_query.price * 1;
+                if (req_query.hasOwnProperty("price")) {
+                    //amount is 1 and price is given price
+                    newSalse = req_query.price * 1;
                     currentAmount = currentAmount - 1;
                     products[index].amount = currentAmount;
+                    products[index].salse = newSalse;
                 }
                 else {
+                    //substract one from amount
                     currentAmount = currentAmount - 1;
                     products[index].amount = currentAmount;
                 }
@@ -327,7 +296,7 @@ app.use('/stocker', function (req, res) {
     {
         console.log("No such function");
     }
-    console.log("function : " + req.query.function);
+    //console.log("function : " + req.query.function);
 
     //if(f === )
 
