@@ -1,0 +1,18 @@
+Script started on Sat Nov  5 18:39:52 2016
+[?1034hbash-3.2$ curl 'http://127.0.0.1:8080/calc?(1+2)*3'
+9
+bash-3.2$ curl 'http://127.0.0.1:8080/calc?1+2*3'
+7
+bash-3.2$ curl 'http://127.0.0.1:8080/calc?4/2'
+2
+bash-3.2$ curl 'http://127.0.0.1:8080/calc?3*2'
+6
+bash-3.2$ curl 'http://127.0.0.1:8080/calc?2-1'
+1
+bash-3.2$ curl 'http://127.0.0.1:8080/calc?1+1'
+2
+bash-3.2$ curl 'http://127.0.0.1:8080/calc?abc'
+ERROR
+bash-3.2$ exit
+
+Script done on Sat Nov  5 18:44:55 2016
