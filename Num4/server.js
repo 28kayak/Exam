@@ -2,8 +2,11 @@
  * Created by kaya on 11/3/16.
  */
 var express = require('express');
-
-
+//var mongo = require('mongo');
+//mongodb client side
+var MongoClient = require('mongodb').MongoClient, assert = require('assert');
+//Connection URL
+var url = 'mongodb://localhost:27017/mongodb';
 var app = express();
 var port = 8088;
 var products = [];//store products
@@ -38,16 +41,27 @@ function addstock(req_query){
         //console.log(Number.isInteger(additional));
         if(! Number.isInteger(additional))
         {
-            
             error = "ERROR @ isInt";
-            
         }
         else
         {
             if(products.length == 0)
             {//if products is empty array
                 newProduct = {"name": req_query.name, "amount": req_query.amount};
+                insertedData = {"name": req_query.name, "amount": req_query.amount};
+
                 products.push(newProduct);
+                //add to mognodb
+                MongoClient.connect(url, function(err, db){
+                    assert.equal(null, err);
+                    console.log("Connected successfully to server");
+
+                    //call insert document function:
+                    insertDocuments(db, function (){
+                        db.close();
+                    });//end of insertDucments function
+                });//end of connect fun
+
             }
             else
             {
@@ -76,18 +90,41 @@ function addstock(req_query){
                             treated = true;//add process is done
                         }
 
-
                     }//if
                 }//for
                 if(!treated)
                 {
-                    //new product will inserted
+                    //new product will be inserted
                     newProduct = {"name": req_query.name, "amount": req_query.amount};
+                    insertedData = {"name": req_query.name, "amount": req_query.amount};
                     products.push(newProduct);
+                    MongoClient.connect(url, function(err, db){
+                        assert.equal(null, err);
+                        console.log("Connected successfully to server");
+
+                        //call insert document function:
+                        insertDocuments(db, function (){
+                            db.close();
+                        });//end of insertDucments function
+                    });//end of connect fun
+
+                }
+                if(treated)
+                {
+                    //Insert to DB the case where there is the product already
+                    //query database by name
+                    MongoClient.connect(url, function(err, db) {
+                        assert.equal(null, err);
+                            updateProductAmount(db, function() {
+                                db.close();
+                            }, req_query, newAmount);
+                        });
+
+
+
                 }
                 
             }
-            
             
         }//integercheck
 
@@ -98,13 +135,26 @@ function addstock(req_query){
         {
             //new Product without amount
             newProduct = {"name": req_query.name, "amount": 1};
+            insertedData =  {"name": req_query.name, "amount": 1};
             products.push(newProduct);
+            MongoClient.connect(url, function(err, db){
+                assert.equal(null, err);
+                console.log("Connected successfully to server");
+
+                //call insert document function:
+                insertDocuments(db, function (){
+                    db.close();
+                });//end of insertDucments function
+            });//end of connect fun
         }
         else
         {
+            //treatment for array of json
             for(index in products)
             {
-                //check if the product is in products already?
+                //check if the product is in
+                //
+                // products already?
                 if (JSON.stringify(products[index].name) === JSON.stringify(req_query.name)) {
                     //yes, there is an identical product
                     var current = parseInt(products[index].amount);
@@ -113,12 +163,37 @@ function addstock(req_query){
                     products[index].amount = newAmount;
                     treated = true;
                 }
-            }
+
+            }//for
+
             if(!treated)
             {
                 //new Product without amount
                 newProduct = {"name": req_query.name, "amount": 1};
+                insertedData = {"name": req_query.name, "amount": 1};
                 products.push(newProduct);
+                MongoClient.connect(url, function(err, db){
+                    assert.equal(null, err);
+                    console.log("Connected successfully to server");
+
+                    //call insert document function:
+                    insertDocuments(db, function (){
+                        db.close();
+                    });//end of insertDucments function
+                });//end of connect fun
+
+            }//if(!treated)
+            if(treated)
+            {
+                //query database by name
+                MongoClient.connect(url, function(err, db) {
+                    assert.equal(null, err);
+                    updateProductAmount(db, function() {
+                        db.close();
+                    }, req_query, newAmount);
+                });
+
+
 
             }
         }
@@ -384,8 +459,10 @@ app.use('/stocker', function (req, res) {
     //console.log('in add stock');
     //console.log('in endpoint');
     //var color = req.query.color;
-    console.log("type of");
-    console.log(typeof req.query.amount);
+    //console.log("type of");
+    //console.log(typeof req.query.amount);
+    console.log(req.query);
+    //console.log(req.body);
     var result = "";
     if(req.query.hasOwnProperty("amount")&& req.query.amount.includes("."))
     {
@@ -414,6 +491,14 @@ app.use('/stocker', function (req, res) {
         else if(f === 'deleteall')
         {
             products = [];
+            //delete all data in mognoDB
+            MongoClient.connect(url, function(err, db) {
+                assert.equal(null, err);
+
+                removeAllProduct(db, function() {
+                    db.close();
+                });
+            });
         }
         else
         {
@@ -445,8 +530,82 @@ app.use('/stocker', function (req, res) {
     }
     //res.end("Current Stock:" + JSON.stringify(products) +"\n" + result +"\n");
 });//use
+//functions for mongoDB
+var insertDocuments = function (db, callback) {
+    //console.log("print DB");
+    //console.log(db);
+    //Get the documents collection
+    var collection = db.collection('products');
+    console.log("Collection:")
+    console.log(collection);
 
+    //Insert some documents
+    collection.insertOne(insertedData, function (err, result) {
+            if(err)
+            {
+                console.log("ERROR : "+err);
+            }
+            else
+            {
+                console.log("Inserted %d documents into the collection\n console output(result)", result.insertedCount);
+            }
+            //assert.equal(null, err);
+            ///assert.equal(3, result.result.n);
+            //assert.equal(3, result.ops.length);
 
+            /* console.log(result);
+             console.log("show result.result");
+             console.log(result.result);
+             console.log("show result.result.ok");
+             console.log(result.result.ok);
+
+             console.log("result.ops");
+             console.log(result.ops);
+
+             console.log("inserted IDs");
+             console.log(result.insertedIds);
+             */
+            //console.log("result.ops.a");
+            //console.log(result.ops.a);//==> undefined
+            //console.log("result.ops._id");
+            //console.log(result.ops._id); //==> undefined
+
+            callback(result);
+        } //function(err, reuslt)
+    );//insert many
+
+}//inset Documents
+var removeAllProduct = function(db, callback) {
+    db.collection('products').deleteMany( {}, function(err, results) {
+        console.log(results);
+        callback();
+    });
+};
+
+var updateProductAmount = function(db, callback, req_query, newAmount) {
+    console.log("====req_query====\n\n");
+    console.log(req_query+"\n\n");
+    db.collection('products').updateOne(
+        { "name" : req_query.name },
+        {
+            $set: { "amount": newAmount },
+            $currentDate: { "lastModified": true }
+        }, function(err, results) {
+            console.log(results);
+            callback();
+        });
+};//updateProductAmount
+var updateProductSales = function(db, callback, req_query, newSalse) {
+    db.collection('products').updateOne(
+        { "name" : req_query.name },
+        {
+            $set: { "salse": newSalse },
+            $currentDate: { "lastModified": true }
+        }, function(err, results) {
+            console.log(results);
+            callback();
+        });
+};//updateProductSales
 
 
 
@@ -455,4 +614,6 @@ app.use('/stocker', function (req, res) {
 app.listen(port, function () {
     console.log("Run @ http://localhost:"+port);
 });//listen
+
+
 
